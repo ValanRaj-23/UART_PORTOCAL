@@ -2,8 +2,9 @@ module uart_rx(
  	input 			clk		, 
  	input 			baud_tick	, 
  	input 			rx		,
+	input 			p_sel		,
  	output reg 		p_error		,
- 	output reg	[7:0] 	d_out_rx		,
+ 	output reg	[7:0] 	d_out_rx	,
  	output reg 		stop_error 
 );
  	reg [2:0] present = 0;
@@ -49,7 +50,7 @@ module uart_rx(
  			PARITY:
 		       	begin 
  				if (baud_tick) begin
- 					parity_bit = ^d_out_rx; 
+ 					parity_bit = p_sel ? ^d_out_rx : !(^d_out_rx);	
  					if (parity_bit != rx) begin
  						p_error 	<= 1;
  						d_out_rx	<= 1;
